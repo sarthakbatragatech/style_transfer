@@ -8,7 +8,7 @@ venv/
 ENV/
 
 # Data
-data/
+# data/
 
 # mypy
 .mypy_cache/
