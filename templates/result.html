@@ -12,10 +12,14 @@
         Content Image Uploaded Successfully
         <br/>
         Filename: {{content}}
-        <br/><br/><br/>
+    </p>
+        <div><img src="{{ url_for('static', filename=content)}}"></div>
+        <br/><br/>
+    <p class="message">
         Style Image Uploaded Successfully
         <br/>
         Filename: {{style}}
     </p>
+        <div><img src="{{ url_for('static', filename=style)}}"></div>
 </body>
 </html>

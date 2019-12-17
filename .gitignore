@@ -9,6 +9,9 @@ ENV/
 
 # Data
 # data/
+static/*.jpg
+static/*.png
+
 
 # mypy
 .mypy_cache/
