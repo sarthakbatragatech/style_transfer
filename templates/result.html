@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='style.css') }}" />
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/style.css') }}" />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,13 +13,13 @@
         <br/>
         Filename: {{content}}
     </p>
-        <div><img src="{{ url_for('static', filename=content)}}"></div>
+        <div><img src="{{ url_for('serve_image', filename=content)}}"></div>
         <br/><br/>
     <p class="message">
         Style Image Uploaded Successfully
         <br/>
         Filename: {{style}}
     </p>
-        <div><img src="{{ url_for('static', filename=style)}}"></div>
+        <div><img src="{{ url_for('serve_image', filename=style)}}"></div>
 </body>
 </html>
