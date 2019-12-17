@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/style.css') }}" />
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Displaying Uploaded Images</title>
+    </head>
+    <body>
+        <div class='container'>
+            <p class='message'>
+                Content Image Uploaded Successfully
+                <br/>
+                Filename: {{content}}
+            </p>
+                <div class='image-container'>
+                    <img class='normal-image'
+                    src="{{ url_for('serve_image', filename=content)}}">
+                </div>
+                <br/><br/>
+            <p class="message">
+                Style Image Uploaded Successfully
+                <br/>
+                Filename: {{style}}
+            </p>
+            <div class='image-container'>
+                    <img class='normal-image'
+                    src="{{ url_for('serve_image', filename=style)}}">
+            </div>
+            <form method="POST" action="{{ url_for('style_transfer') }}" enctype=multipart/form-data>
+                <input type="submit" value="Run Style Transfer">
+            </form>
+        </div>
+        <div class='footer'>
+                <p>A project by Sarthak Batra</p>
+        </div>
+    </body>
+</html>

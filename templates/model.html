@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/style.css') }}" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Results</title>
+    </head>
+    <body>
+        <div class='container'>
+            <p class='message'>
+                Neural Style Transfer Results Below...Please wait
+            </p>
+            <div class='image-container'>
+                    <img class='output_image' 
+                    src="{{ url_for('serve_image', filename=output_image)}}">
+            </div>
+        </div>
+        <div class='footer'>
+            <p>A project by Sarthak Batra</p>
+        </div>
+    </body>
+</html>

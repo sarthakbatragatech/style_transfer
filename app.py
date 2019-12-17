@@ -21,7 +21,7 @@ def upload():
         content_image.save(upload_path + '/' + content_image.filename)
         style_image.save(upload_path + '/' + style_image.filename)
         return render_template(
-            'result.html', 
+            'upload.html', 
             content=content_image.filename,
             style=style_image.filename)
 
@@ -31,3 +31,8 @@ def serve_image(filename):
     return send_from_directory(
         directory='static/uploads',
         filename=filename)
+
+@app.route('/model', methods=['GET', 'POST'])
+def style_transfer():
+    if request.method=='POST':
+        return render_template('model.html', output_image='output.png')
