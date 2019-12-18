@@ -1,6 +1,10 @@
 from pathlib import Path
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for
 from utils import is_file_allowed
+from style_transfer import run_model
+
+content_filename=''
+style_filename=''
 
 app = Flask(__name__)
 
@@ -20,6 +24,7 @@ def upload():
     if request.method=='POST':
         content_image = request.files['content']
         style_image = request.files['style']
+        global content_filename, style_filename
         content_filename = content_image.filename
         style_filename = style_image.filename
         if is_file_allowed(content_filename):
@@ -29,7 +34,7 @@ def upload():
             style_image.save(
                 upload_path + '/' + style_filename)
         else:
-            print("Check the file extention you've uploaded")
+            print("Check the file extension you've uploaded")
             # return render_template('index.html')
             return redirect(url_for('home'))
         return render_template(
@@ -48,4 +53,9 @@ def serve_image(filename):
 @app.route('/model', methods=['GET', 'POST'])
 def style_transfer():
     if request.method=='POST':
-        return render_template('model.html', output_image='output.png')
+        output_filename = run_model(
+            content=content_filename,
+            style=style_filename,
+            dir=upload_path)
+        print(output_filename)
+        return render_template('model.html', output_image=output_filename)

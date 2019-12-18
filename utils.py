@@ -1,4 +1,4 @@
-# Function to check if uploaded file has an acceptable extention
+# Function to check if uploaded file has an acceptable extension
 def is_file_allowed(filename):
     if not "." in filename:
         return False
