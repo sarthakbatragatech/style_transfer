@@ -1,5 +1,5 @@
 from pathlib import Path
-from flask import Flask, render_template, request, send_from_directory, redirect
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for
 from utils import is_file_allowed
 
 app = Flask(__name__)
@@ -30,7 +30,8 @@ def upload():
                 upload_path + '/' + style_filename)
         else:
             print("Check the file extention you've uploaded")
-            return render_template('index.html')
+            # return render_template('index.html')
+            return redirect(url_for('home'))
         return render_template(
             'upload.html', 
             content=content_image.filename,
