@@ -1,11 +1,8 @@
 from pathlib import Path
 from flask import Flask, render_template, request, send_from_directory, redirect
 from utils import is_file_allowed
-# from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-
-
 
 # This will give us the PosixPath of the working directory
 dir_path = Path('.')
