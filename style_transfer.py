@@ -12,8 +12,8 @@ import torchvision.models as models
 #to deep copy the models
 import copy
 import os
-# Prevent browser caching of generated image
-import time
+from utils import image_loader, imshow
+from utils import ContentLoss, StyleLoss, Normalization
 
 def run_model(content, style, dir):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,7 +23,8 @@ def run_model(content, style, dir):
     if torch.cuda.is_available():
         imsize = (512, 512) 
     else:
-        imsize = (64, 64)  
+        # Kept it low for quick debugging
+        imsize = (32, 32)  
 
     # Resize image and transform to torch tensor
     tfms = [
@@ -32,78 +33,10 @@ def run_model(content, style, dir):
     ]
     loader = transforms.Compose(tfms)
 
-    # Convert image to torch tensor
-    def image_loader(img_path):
-        img = Image.open(img_path)
-        # Insert 1 in shape of the tensor at axis 0 (batch size)
-        # Extra dimension is required to fit the network's input dimensions
-        img = loader(img).unsqueeze(0)
-        return img.to(device, torch.float)
-
-    style_img = image_loader(dir + '/' + content)
-    content_img = image_loader(dir + '/' + style)
+    style_img = image_loader(dir + '/' + content, loader, device)
+    content_img = image_loader(dir + '/' + style, loader, device)
 
     unloader = transforms.ToPILImage()
-
-    def imshow(tensor, title=None, output=False):
-        # Clone the tensor so it's not changed in-place
-        image = tensor.cpu().clone()
-        # Removed the extra dimension added previously
-        image = image.squeeze(0)      
-        image = unloader(image)
-        # Now we have a normal image, let's display it
-        plt.imshow(image)
-        if title is not None:
-            plt.title(title)
-        if output:
-            output_name = 'result' + '?' + str(time.time()) + '.png'
-            plt.savefig(
-                dir + '/' + output_name, 
-                dpi=100, 
-                bbox_inches=None,
-                pad_inches=0.)
-            plt.close()
-            return output_name
-    
-    class ContentLoss(nn.Module):
-    
-        def __init__(self, target):
-            # Sub-class this class
-            super(ContentLoss, self).__init__()
-            # we 'detach' the target content from the tree used
-            # to dynamically compute the gradient: this is a stated value,
-            # not a variable. Otherwise the forward method of the criterion
-            # will throw an error.
-            self.target = target.detach()
-
-        def forward(self, input):
-            self.loss = F.mse_loss(input, self.target)
-            return input
-
-    def gram_matrix(input):
-        # a is batch size, equal to 1
-        # b is the number of feature maps
-        # (c,d) are dimensions of feature map
-        a, b, c, d = input.size()  
-
-        # resize matrix to [b,(c*d)] form
-        features = input.view(a * b, c * d)  
-        
-        # Compute the Gram-Matrix and normalize it
-        G = torch.mm(features, features.t())
-        return G.div(a * b * c * d)
-
-    class StyleLoss(nn.Module):
-
-        def __init__(self, target_feature):
-            # Sub-class this class
-            super(StyleLoss, self).__init__()
-            self.target = gram_matrix(target_feature).detach()
-
-        def forward(self, input):
-            G = gram_matrix(input)
-            self.loss = F.mse_loss(G, self.target)
-            return input
     
     # import ssl
     # ssl._create_default_https_context = ssl._create_unverified_context
@@ -111,21 +44,6 @@ def run_model(content, style, dir):
 
     vgg_mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
     vgg_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
-
-    class Normalization(nn.Module):
-        def __init__(self, mean, std):
-            # Sub-class this class
-            super(Normalization, self).__init__()
-            
-            # Use .view to change the shape of the mean and std
-            # tensors. They take the form [num_channels x 1 x 1] 
-            # and become compatible with the image tensors
-            self.mean = torch.tensor(mean).view(-1, 1, 1)
-            self.std = torch.tensor(std).view(-1, 1, 1)
-
-        def forward(self, img):
-            # normalize the image with VGG stats
-            return (img - self.mean) / self.std
     
     # Calculate content loss at conv level 4
     content_layers_default = ['conv_4']
@@ -200,7 +118,7 @@ def run_model(content, style, dir):
         model = model[:(i + 1)]
 
         return model, style_losses, content_losses
-    
+
     input_img = content_img.clone()
     # For white noise, uncomment the line below
     # input_img = torch.randn(content_img.data.size(), device=device)
@@ -216,7 +134,7 @@ def run_model(content, style, dir):
         content_img,
         style_img,
         input_img,
-        num_steps=100,
+        num_steps=50, # Kept it low for quick debugging
         style_weight=1000000,
         content_weight=1):
             
@@ -279,6 +197,12 @@ def run_model(content, style, dir):
         input_img)
 
     plt.figure()
-    output_name = imshow(output, title='Output Image', output=True)
+    output_name = imshow(
+        output, 
+        loader,
+        unloader,
+        dir,
+        title='Output Image',
+        output=True)
 
     return output_name
