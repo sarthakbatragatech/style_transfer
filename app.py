@@ -34,7 +34,7 @@ def upload():
             style_image.save(
                 upload_path + '/' + style_filename)
         else:
-            print("Check the file extension you've uploaded")
+            print('Check file extension (only PNG, JPEG, JPG allowed)')
             # return render_template('index.html')
             return redirect(url_for('home'))
         return render_template(
@@ -57,5 +57,5 @@ def style_transfer():
             content=content_filename,
             style=style_filename,
             dir=upload_path)
-        print(output_filename)
+        print(f'Output Filename: {output_filename}')
         return render_template('model.html', output_image=output_filename)
