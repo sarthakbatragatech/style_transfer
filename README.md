@@ -50,7 +50,7 @@ Be sure to mess around with network parameters and try the various styles I have
 
 ### What's Next for this Project?
 
-- Allow the user to control parameters of the network like style weight and content weight, number of iterations, image size through the web app.
+- Allow the user to control parameters of the network like style weight and content weight, number of iterations, image size, etc. through the web app.
 - Improve structure of the codebase, create subdirectors to better organize stuff
-- Push image storage, retrieval and running the network and make a modern web-app that can be shared easily with anyone, on any device.
+- Push image storage, retrieval and running the network to the cloud and make a modern web-app that can be shared easily with anyone, on any device.
 - Detail some interesting issues that I ran into while working on this project including browser caching, dealing with extra image channels, etc.
