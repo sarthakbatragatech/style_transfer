@@ -1,6 +1,6 @@
 from pathlib import Path
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for
-from utils import is_file_allowed
+from utils import is_file_allowed, add_time
 from style_transfer import run_model
 
 content_filename=''
@@ -25,8 +25,10 @@ def upload():
         content_image = request.files['content']
         style_image = request.files['style']
         global content_filename, style_filename
-        content_filename = content_image.filename
-        style_filename = style_image.filename
+        # To prevent browser caching, add current time to image name
+        content_filename = add_time(content_image.filename)
+        style_filename = add_time(style_image.filename)
+        print(style_filename)
         if is_file_allowed(content_filename):
             content_image.save(
                 upload_path + '/' + content_filename)

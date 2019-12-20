@@ -23,6 +23,13 @@ def is_file_allowed(filename):
     else:
         return False
 
+# Function to add time component to an image name
+def add_time(filename):
+    img_name = filename.rsplit('.')[0]
+    img_suffix = filename.rsplit('.')[1]
+    filename = img_name + '?' + str(time.time()) + '.' + img_suffix
+    return filename
+
 # Convert image to torch tensor
 def image_loader(img_path, loader, device):
     img = Image.open(img_path)
