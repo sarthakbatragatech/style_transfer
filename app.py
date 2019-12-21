@@ -27,6 +27,7 @@ def upload():
         global content_filename, style_filename
         # To prevent browser caching, add current time to image name
         content_filename = add_time(content_image.filename)
+        print(content_filename)
         style_filename = add_time(style_image.filename)
         print(style_filename)
         if is_file_allowed(content_filename):
@@ -41,8 +42,8 @@ def upload():
             return redirect(url_for('home'))
         return render_template(
             'upload.html', 
-            content=content_image.filename,
-            style=style_image.filename)
+            content=content_filename,
+            style=style_filename)
 
 # Serve the uploaded files
 @app.route('/upload/<filename>')
