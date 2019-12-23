@@ -5,9 +5,9 @@ import torchvision.transforms as transforms
 import torchvision.models as models
 from utils import image_loader, imshow, get_style_model_and_losses
 from utils import get_input_optimizer, run_style_transfer
-from utils import ContentLoss, StyleLoss, Normalization
+from utils import gram_matrix, ContentLoss, StyleLoss, Normalization
 
-def run_model(content, style, dir):
+def run_model(content, style, folder):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Use smaller image size if gpu isn't available
@@ -21,8 +21,8 @@ def run_model(content, style, dir):
     tfms = [transforms.Resize(imsize), transforms.ToTensor()]
     loader = transforms.Compose(tfms)
 
-    style_img = image_loader(dir + '/' + content, loader, device)
-    content_img = image_loader(dir + '/' + style, loader, device)
+    style_img = image_loader(folder + '/' + content, loader, device)
+    content_img = image_loader(folder + '/' + style, loader, device)
 
     unloader = transforms.ToPILImage()
     
@@ -38,10 +38,11 @@ def run_model(content, style, dir):
     # input_img = torch.randn(content_img.data.size(), device=device)
 
     output = run_style_transfer(cnn, vgg_mean, vgg_std, content_img, 
-                                style_img, input_img, device)
+                                style_img, input_img, device, loader, 
+                                unloader, folder)
 
-    plt.figure()
-    output_name = imshow(output, loader, unloader, dir, 
+    plt.figure(figsize=(8,8))
+    output_name = imshow(output, loader, unloader, folder, 
                         title='Output Image', output=True)
 
     return output_name

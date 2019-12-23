@@ -27,9 +27,7 @@ def upload():
         global content_filename, style_filename
         # To prevent browser caching, add current time to image name
         content_filename = add_time(content_image.filename)
-        print(content_filename)
         style_filename = add_time(style_image.filename)
-        print(style_filename)
         if is_file_allowed(content_filename):
             content_image.save(
                 upload_path + '/' + content_filename)
@@ -57,8 +55,8 @@ def serve_image(filename):
 def style_transfer():
     if request.method=='POST':
         output_filename = run_model(
-            content=content_filename,
-            style=style_filename,
-            dir=upload_path)
+           content=content_filename,
+           style=style_filename,
+           folder=upload_path)
         print(f'Output Filename: {output_filename}')
         return render_template('model.html', output_image=output_filename)

@@ -27,7 +27,7 @@ def is_file_allowed(filename):
 def add_time(filename):
     img_name = filename.rsplit('.')[0]
     img_suffix = filename.rsplit('.')[1]
-    filename = img_name + '?' + str(time.time()) + '.' + img_suffix
+    filename = str(time.time()).replace('.','_') +'.'+img_suffix
     return filename
 
 # Convert image to torch tensor
@@ -41,7 +41,7 @@ def image_loader(img_path, loader, device):
     img = loader(img).unsqueeze(0)
     return img.to(device, torch.float)
 
-def imshow(tensor, loader, unloader, dir, title=None, output=False):
+def imshow(tensor, loader, unloader, folder='', title=None, output=False):
     # Clone the tensor so it's not changed in-place
     image = tensor.cpu().clone()
     # Removed the extra dimension added previously
@@ -54,8 +54,7 @@ def imshow(tensor, loader, unloader, dir, title=None, output=False):
     if output:
         output_name = 'result' + '?' + str(time.time()) + '.png'
         plt.savefig(
-            dir + '/' + output_name, 
-            dpi=100, 
+            folder + '/' + output_name, 
             bbox_inches=None,
             pad_inches=0.)
         plt.close()
@@ -203,7 +202,10 @@ def run_style_transfer(
     style_img,
     input_img,
     device,
-    num_steps=250, # Kept it low for quick debugging
+    loader,
+    unloader,
+    folder,
+    num_steps=300, # Kept it low for quick debugging
     style_weight=1000000,
     content_weight=1):
         
@@ -244,10 +246,10 @@ def run_style_transfer(
                 print(f'Style Loss : {style_score.item():4f}')
                 print(f'Content Loss: {content_score.item():4f}')
                 print()
-                # plt.figure()
-                # imshow(input_img)
-                # plt.show()
-
+                plt.figure(figsize=(8,8))
+                title = f'Run {run[0]} Image'
+                imshow(input_img, loader, unloader, folder, 
+                        title=title, output=True)                
             return style_score + content_score
 
         optimizer.step(closure)
