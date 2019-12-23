@@ -31,6 +31,10 @@ The [style_transfer notebook](https://github.com/sarthakbatragatech/style_transf
 
 To make the style transfer process practical and scalable, I made a [Flask](https://www.palletsprojects.com/p/flask/) based Web Application that allows you to upload a content image and a style image of your choice. The network runs seamlessly on these two images and renders the desired output image in the browser. You can quickly experiment with different styles and generate several cool images!
 
+### App Screenshots
+
+<img src='data/readme_images/homepage.png' width=300px height=300px /> <img src='data/readme_images/uploadpage.png' width=300px height=300px />
+
 ### How do I run the Web App?
 
 After cloning the repository from Github, make sure you are in the project directory and execute the following commands:
